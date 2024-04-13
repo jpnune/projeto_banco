@@ -43,9 +43,21 @@ Variáveis, Estruturas Condicionais, Estrutura de Repetição, Manipulação de 
 ## 📑 LINGUAGEM
  + Python 3.x
 
+## COMO EXECUTAR
+ + Windows: 
+ ```
+    Utilizando o comando python no terminal:
+    
+    Abra o terminal ou prompt de comando.
+    Navegue até o diretório onde o arquivo foi baixado.
+    Digite o comando “python projeto_v1_banco.py” e pressione Enter.
+    O arquivo Python será executado e o resultado será exibido no terminal.
+ ``` 
+
  ## 👨‍💻 AUTOR
 - [@jpnune](https://github.com/jpnune)
 
 ## 📝 Licenças
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+
