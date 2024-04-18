@@ -1,3 +1,5 @@
+# Em contrução
+
 # Desafio V2 
 
 Precisamos deixar nosso código mais modularizado, para isso vamos criar funções para as operações existentes: Sacar, Depositar, Visualizar Extrato, Visualizar saldo. Além disso, para versão 2 do nosso sistena precisamos criar duas novas funções: Criar usuário(cliente do banco) e criar conta corrente (vincular comm usuário). 

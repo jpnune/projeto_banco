@@ -1,3 +1,4 @@
+#TODO: apos deposito consecutivo nao esta mostrando saque com opçao de sacar 
 # ------------------> INICIO CODIGO <------------------------
 
 # Variáveis Globais
@@ -10,6 +11,80 @@ quantidide_saque_diario_realizado = 0
 QUANTIDADE_SAQUE_DIARIO_MAXIMO = 3
 VALOR_MAXIMO_POR_SAQUE = 500
 
+#funções
+
+def visualizar_saldo(saldo):
+    print(f'Saldo disponivel: R${saldo:.2f}\n')
+
+def Alterar_saldo(operacao, valor, valor_saldo=saldo, quantidade_de_operacoes = quantidade_de_operacoes):
+    print(valor)
+    print(valor_saldo)
+    if operacao == 1:
+        valor_saldo += valor
+        quantidade_de_operacoes += 1
+        print(f'dentro da funcao alterar saldo op1== {valor_saldo}')
+        return valor_saldo, quantidade_de_operacoes
+    elif operacao == 0:
+        valor_saldo -= valor
+        print(f'dentro da funcao alterar saldo op0== {valor_saldo}')
+        return valor_saldo, quantidade_de_operacoes
+    
+    print(f'dentro da funcao alterar saldo fora do if== {valor_saldo}')
+
+def verificar_verdade(y, funcao = None):
+    if y == 1 or y == 0:
+        result = funcao
+        return  result
+        
+    else:
+        return  verificar_verdade(y,  funcao = None)
+
+
+def depositar(conta, valor):
+    pass
+
+def sacar(conta, valor):
+    pass
+
+def visualizar_extrato(conta):
+    pass
+
+def criar_usuário():
+    pass
+
+def criar_contos():
+    pass
+
+def menu_sup():
+    limpar_tela()
+    print(f'{"#"*15}  MEMENU DE OPÇOES  {"#"*15}\n')
+    print(f'{" "*10}Escolha uma opcão do menu abaixo\n')
+    print(f'{" "*15}[ 1 ] Consultar saldo')
+    print(f'{" "*15}[ 2 ] Depositar')
+    
+
+def menu_inf():
+    print(f'{" "*15}[ 4 ] Extrato')
+    print(f'{" "*15}[ 9 ] Sair')
+    
+def limpar_tela():
+    print(f'{"\n"*10}') #limpar a tela 
+        
+def sub_menu(simple=True):
+    if True:
+        print('[ 0 ] Voltar ao menu principal\n[ 9 ] Sair\n ') 
+    else:
+        pass
+        
+# Formata a casa decimal do número inserido no input "deposito".
+def formatar_string(texto):
+    if texto ==".":
+        texto = "0.00"
+    elif (len(texto) - (str.find(texto,'.')+1) < 2) or (str.find(texto,'.') == -1): 
+        texto = f'{float(texto)}0'
+    else:
+        texto = texto[:str.find(texto,'.')+3] 
+    return texto      
 
 #looping do menu.
 while True:
@@ -17,50 +92,40 @@ while True:
     
     # Verifica se é possivel fazer saque no dia, muda o layout do menu com ou sem opção de saque.
     if saldo ==0 or quantidide_saque_diario_realizado == QUANTIDADE_SAQUE_DIARIO_MAXIMO:
-
+        print('menu sem saque')
         # Menu sem opção de saque.
-        print(f'{"\n"*1000}') #limpar a tela 
-        print(f'{"#"*15}  MEMENU DE OPÇOES  {"#"*15}\n')
-        print(f'{" "*10}Escolha uma opcão do menu abaixo\n')
-        print(f'{" "*15}[ 1 ] Consultar saldo')
-        print(f'{" "*15}[ 2 ] Depositar')
-        print(f'{" "*15}[ 4 ] Extrato')
-        print(f'{" "*15}[ 9 ] Sair')
+        menu_sup()
+        menu_inf()
         print()
 
         # Menssagem de saque diário atingido.
         if quantidide_saque_diario_realizado == QUANTIDADE_SAQUE_DIARIO_MAXIMO:
             print(f'{' '*7}Limite de saques diarios atingido!\n')
         opcao = int(input(f'{"#"*51}{"\n"*3}Digite aqui --> '))
-        print(f'{"\n"*1000}') # Limpar a tela.
+        limpar_tela()
         if opcao == 3:
             continue
     else:
         # Menu com opção de saque.
-        print(f'{"\n"*1000}') #Limpar a tela. 
-        print(f'{"#"*15}  MEMENU DE OPÇOES  {"#"*15}\n')
-
-        print(f'{" "*10}Escolha uma opcão do menu abaixo\n')
-        print(f'{" "*15}[ 1 ] Consultar saldo')
-        print(f'{" "*15}[ 2 ] Depositar')
+        print(f'menu com saque')
+        menu_sup()
         print(f'{" "*15}[ 3 ] Sacar')
-        print(f'{" "*15}[ 4 ] Extrato')
-        print(f'{" "*15}[ 9 ] Sair')
+        menu_inf()
         print()
         opcao = int(input(f'{"#"*51}{"\n"*3}Digite aqui --> '))
-        print(f'{"\n"*1000}') # Limpar a tela.
+        limpar_tela()
     # ----> FIM bloco Menu <----
         
     # ----> Início bloco Saldo <----
     # Refere-se a opção 1 do Menu.
     if opcao == 1: 
-        print(f'Saldo disponivel: R${saldo:.2f}\n')
+        visualizar_saldo(saldo)
 
         # Verifica alguns possíveis erros do usuário forçando-o a escolher a opção correta.
         while True: 
-            print('[ 0 ] Voltar ao menu principal\n[ 9 ] Sair\n ') 
+            sub_menu()
             voltar_menu = input('digite uma das opções acima: ') 
-            print(f'{"\n"*1000}') #limpar a tela   
+            limpar_tela()  
 
             # Sai do menu de opções caso seja digitado 0 ou 9.
             if voltar_menu == '0' or voltar_menu == '9':
@@ -76,20 +141,14 @@ while True:
         # Cria um submenu de depósito caso usuário queira continuar fazendo depósitos consecutivos.
         while True:
             deposito = input('digite o valor do depósito: ')
-            print(f'{"\n"*1000}') # Limpar a tela. 
+            limpar_tela()
             
             # Formata a casa decimal do número inserido no input "deposito".
-            if deposito ==".":
-                deposito = "0.00"
-            elif (len(deposito) - (str.find(deposito,'.')+1) < 2) or (str.find(deposito,'.') == -1): 
-                deposito = f'{float(deposito)}0'
-            else:
-                deposito = deposito[:str.find(deposito,'.')+3]
+            formatar_string(deposito)
             
             # Verifica se o depósito é um valor positivo (maior que 0).
             if float(deposito) > 0:
-                saldo += float(deposito) # Adiciona o valor do deposito no saldo.
-                quantidade_de_operacoes += 1 # Soma 1 ao contador "quantidade de operações" para ser usado no extrato.
+                saldo, quantidade_de_operacoes = Alterar_saldo(1,float(deposito))
                 extrato += f'{quantidade_de_operacoes}{" "*(20 - len(str(quantidade_de_operacoes)))}  Depósito {" "*(34-len(deposito))} R${deposito}\n' # Formata e adiciona item no extrato.
                 print(f'Depósito efetuado com sucesso! {"\n"*5}')
             else:
