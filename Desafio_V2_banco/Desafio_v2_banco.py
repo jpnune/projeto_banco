@@ -1,4 +1,3 @@
-#TODO: apos deposito consecutivo nao esta mostrando saque com opçao de sacar 
 # ------------------> INICIO CODIGO <------------------------
 
 # Variáveis Globais
@@ -11,186 +10,109 @@ quantidide_saque_diario_realizado = 0
 QUANTIDADE_SAQUE_DIARIO_MAXIMO = 3
 VALOR_MAXIMO_POR_SAQUE = 500
 
+
+
 #funções
-
-def visualizar_saldo(saldo):
-    print(f'Saldo disponivel: R${saldo:.2f}\n')
-
-def Alterar_saldo(operacao, valor, valor_saldo=saldo, quantidade_de_operacoes = quantidade_de_operacoes):
-    print(valor)
-    print(valor_saldo)
-    if operacao == 1:
-        valor_saldo += valor
-        quantidade_de_operacoes += 1
-        print(f'dentro da funcao alterar saldo op1== {valor_saldo}')
-        return valor_saldo, quantidade_de_operacoes
-    elif operacao == 0:
-        valor_saldo -= valor
-        print(f'dentro da funcao alterar saldo op0== {valor_saldo}')
-        return valor_saldo, quantidade_de_operacoes
-    
-    print(f'dentro da funcao alterar saldo fora do if== {valor_saldo}')
-
-def verificar_verdade(y, funcao = None):
-    if y == 1 or y == 0:
-        result = funcao
-        return  result
-        
-    else:
-        return  verificar_verdade(y,  funcao = None)
-
-
-def depositar(conta, valor):
-    pass
-
-def sacar(conta, valor):
-    pass
-
-def visualizar_extrato(conta):
-    pass
-
-def criar_usuário():
-    pass
-
-def criar_contos():
-    pass
-
-def menu_sup():
+def menu(sacar = False):
+     # Menu sem opção de saque.
     limpar_tela()
     print(f'{"#"*15}  MEMENU DE OPÇOES  {"#"*15}\n')
     print(f'{" "*10}Escolha uma opcão do menu abaixo\n')
     print(f'{" "*15}[ 1 ] Consultar saldo')
     print(f'{" "*15}[ 2 ] Depositar')
-    
-
-def menu_inf():
+    if sacar == True:
+        print(f'{" "*15}[ 3 ] Sacar')
     print(f'{" "*15}[ 4 ] Extrato')
     print(f'{" "*15}[ 9 ] Sair')
+    print()
+    opcao = int(input(f'{"#"*51}{"\n"*3}Digite aqui --> '))
+    return opcao
+
     
-def limpar_tela():
-    print(f'{"\n"*10}') #limpar a tela 
-        
-def sub_menu(simple=True):
-    if True:
+def sub_menu(menu_principal = False):
+    if menu_principal == False:
         print('[ 0 ] Voltar ao menu principal\n[ 9 ] Sair\n ') 
     else:
-        pass
-        
+        print('[ 0 ] Voltar ao menu principal\n[ 1 ] Fazer um novo depósito\n[ 9 ] Sair\n')
+    voltar_menu = input('digite uma das opções acima: ') 
+    limpar_tela() 
+
+    # Sai da função caso seja digitado 0 ou 9.
+    if voltar_menu == '0' or voltar_menu == '9':
+        return voltar_menu  
+    if menu_principal == False:
+        print('Opção invalida!\nDigite: 0 para voltar ao menu principal ou 9 para encerrar o atendimento!\n')
+        sub_menu()
+    else:      
+        if voltar_menu == '1':
+            return voltar_menu
+        else:
+            print('Opção incorreta, digite 0, 1 ou 9 conforme as opções apresentada!\n')
+            sub_menu(menu_principal=True)
+
+    
+def limpar_tela():
+    print(f'{"\n"*20}') #limpar a tela 
+
+
 # Formata a casa decimal do número inserido no input "deposito".
 def formatar_string(texto):
-    if texto ==".":
-        texto = "0.00"
-    elif (len(texto) - (str.find(texto,'.')+1) < 2) or (str.find(texto,'.') == -1): 
+    try:
+        texto = float(texto)    
+    except:
+        return "Valor digitado não é um número válido. Tente um numero com casas decimais. Ex: 3.14"
+
+    texto = str(texto)
+    if (len(texto) - (str.find(texto,'.')+1) < 2) or (str.find(texto,'.') == -1): 
         texto = f'{float(texto)}0'
     else:
         texto = texto[:str.find(texto,'.')+3] 
-    return texto      
+    return texto
 
-#looping do menu.
-while True:
-    # ----> Início bloco Menu <----
+def visualizar_saldo(v_salda=saldo):
+    print(f'Saldo disponivel: R${v_salda:.2f}\n')
+
+
+
+def depositar(v_saldo=saldo, v_quantidade_de_operacoes=quantidade_de_operacoes, v_extrato=extrato):
+    deposito = input('digite o valor do depósito: ')
+    limpar_tela()
     
-    # Verifica se é possivel fazer saque no dia, muda o layout do menu com ou sem opção de saque.
-    if saldo ==0 or quantidide_saque_diario_realizado == QUANTIDADE_SAQUE_DIARIO_MAXIMO:
-        print('menu sem saque')
-        # Menu sem opção de saque.
-        menu_sup()
-        menu_inf()
-        print()
-
-        # Menssagem de saque diário atingido.
-        if quantidide_saque_diario_realizado == QUANTIDADE_SAQUE_DIARIO_MAXIMO:
-            print(f'{' '*7}Limite de saques diarios atingido!\n')
-        opcao = int(input(f'{"#"*51}{"\n"*3}Digite aqui --> '))
-        limpar_tela()
-        if opcao == 3:
-            continue
+    deposito = formatar_string(deposito)
+    
+    # Verifica se o depósito é um valor positivo (maior que 0).
+    if float(deposito) > 0:
+        v_saldo += float(deposito) # Adiciona o valor do deposito no saldo.
+        v_quantidade_de_operacoes += 1 # Soma 1 ao contador "quantidade de operações" para ser usado no extrato.
+        v_extrato += f'{v_quantidade_de_operacoes}{" "*(20 - len(str(v_quantidade_de_operacoes)))}  Depósito {" "*(34-len(deposito))} R${deposito}\n' # Formata e adiciona item no extrato.
+        print(f'Depósito efetuado com sucesso! {"\n"*5}')
     else:
-        # Menu com opção de saque.
-        print(f'menu com saque')
-        menu_sup()
-        print(f'{" "*15}[ 3 ] Sacar')
-        menu_inf()
-        print()
-        opcao = int(input(f'{"#"*51}{"\n"*3}Digite aqui --> '))
-        limpar_tela()
-    # ----> FIM bloco Menu <----
-        
-    # ----> Início bloco Saldo <----
-    # Refere-se a opção 1 do Menu.
-    if opcao == 1: 
-        visualizar_saldo(saldo)
+        print('O depósito tem que ser um valor maior que R$ 0.00\n')
 
-        # Verifica alguns possíveis erros do usuário forçando-o a escolher a opção correta.
-        while True: 
-            sub_menu()
-            voltar_menu = input('digite uma das opções acima: ') 
-            limpar_tela()  
+    return v_saldo, v_quantidade_de_operacoes, v_extrato
+           
 
-            # Sai do menu de opções caso seja digitado 0 ou 9.
-            if voltar_menu == '0' or voltar_menu == '9':
-                break
-            else:
-                print('Opção invalida!\nDigite: 0 para voltar ao menu principal ou 9 para encerrar o atendimento!\n')
-    # ----Fim bloco Saldo <----
-
-    # ----> Início bloco Depósito <----        
-    # Refere-se a opção 2 do Menu.
-    elif opcao == 2: 
-
-        # Cria um submenu de depósito caso usuário queira continuar fazendo depósitos consecutivos.
-        while True:
-            deposito = input('digite o valor do depósito: ')
-            limpar_tela()
-            
-            # Formata a casa decimal do número inserido no input "deposito".
-            formatar_string(deposito)
-            
-            # Verifica se o depósito é um valor positivo (maior que 0).
-            if float(deposito) > 0:
-                saldo, quantidade_de_operacoes = Alterar_saldo(1,float(deposito))
-                extrato += f'{quantidade_de_operacoes}{" "*(20 - len(str(quantidade_de_operacoes)))}  Depósito {" "*(34-len(deposito))} R${deposito}\n' # Formata e adiciona item no extrato.
-                print(f'Depósito efetuado com sucesso! {"\n"*5}')
-            else:
-                print('O depósito tem que ser um valor maior que R$ 0.00\n')
-
-            # Verifica alguns possíveis erros do usuário forçando-o a escolher a opção correta.
-            while True:
-                print('[ 0 ] Voltar ao menu principal\n[ 1 ] Fazer um novo depósito\n[ 9 ] Sair\n')
-                voltar_menu = input( 'digite uma das opções acima: ')
-                print(f'{"\n"*1000}') # Limpar a tela.      
-                if voltar_menu == '0' or voltar_menu == '1' or voltar_menu == '9':
-                    break
-                else:
-                    print('Opção incorreta, digite 0, 1 ou 9 conforme as opções apresentada!\n')
-            if voltar_menu == '0' or voltar_menu == '9' :
-                break
-    # ----> Fim bloco Depósito <----
-
-    # ----> Inicio bloco Saque <----     
-    # Refere-se a opção 3 do Menu
-    elif opcao == 3: 
-
-        # Cria um submenu de saque caso usuário queira continuar fazendo saques consecutivos.
-        while True:
+def sacar(v_saldo=saldo,
+          v_quantidade_de_operacoes=quantidade_de_operacoes,
+          v_extrato=extrato,
+          v_quantidide_saque_diario_realizado=quantidide_saque_diario_realizado,
+          V_VALOR_MAXIMO_POR_SAQUE= VALOR_MAXIMO_POR_SAQUE):
+    
+    while True:
 
             # Verifica o saldo para saber se é possível fazer saque.
-            if saldo == 0:
+            if v_saldo == 0:
                 print(f'Saldo insuficiente!\n')
+                break
             else:
-                print(f'Saldo: R${saldo :.2f}\n')
+                print(f'Saldo: R${v_saldo :.2f}\n')
                 saque = input('Digite o valor de saque desejado: ')
 
                 # Formata a casa decimal do número inserido no input "saque".
-                if saque ==".":
-                    saque = "0.00"
-                elif (len(saque) - (str.find(saque,'.')+1) < 2) or (str.find(saque,'.') == -1): 
-                    saque = f'{float(saque)}0'
-                else:
-                    saque = saque[:str.find(saque,'.')+3]
+                formatar_string(saque)
 
                 flt_saque = float(saque)
-                print(f'{"\n"*1000}') # Limpar a tela.  
+                limpar_tela() 
 
                 # Verifica se o numero digitado é positivo.
                 if flt_saque <= 0:
@@ -198,23 +120,23 @@ while True:
                 else:
 
                     #  Verifica se o valor é menor que a restrição de valor máximo por dia.
-                    if flt_saque <= VALOR_MAXIMO_POR_SAQUE:
+                    if flt_saque <= V_VALOR_MAXIMO_POR_SAQUE:
 
                         # Verifica se valor do saldo é maior que valor do saque.
-                        if flt_saque <= saldo:
+                        if flt_saque <= v_saldo:
 
                             # Confirmação e execução do valor do saque.
                             while True:
                                 print(f'O valor de R$ {saque} será descontado da conta, confirma?\n[ 0 ] NÃO\n[ 1 ] SIM\n')
                                 confirmacao = input('digite uma das opções acima: ')
-                                print(f'{"\n"*1000}') # Limpar a tela. 
+                                limpar_tela() 
                                 if confirmacao == '1':
-                                    saldo -= flt_saque # Retira o valor do saldo.
-                                    quantidade_de_operacoes += 1 # Soma 1 ao contador "quantidade de operações" para ser usado no extrato.
-                                    extrato += f'{quantidade_de_operacoes}{" "*(20 - len(str(quantidade_de_operacoes)))}  Saque {" "*(37-len(saque))} R${saque}\n' # Formata e adiciona item no extrato.
-                                    quantidide_saque_diario_realizado +=1 # Soma em 1 na contagem de saques diários.
+                                    v_saldo -= flt_saque # Retira o valor do saldo.
+                                    v_quantidade_de_operacoes += 1 # Soma 1 ao contador "quantidade de operações" para ser usado no extrato.
+                                    v_extrato += f'{v_quantidade_de_operacoes}{" "*(20 - len(str(v_quantidade_de_operacoes)))}  Saque {" "*(37-len(saque))} R${saque}\n' # Formata e adiciona item no extrato.
+                                    v_quantidide_saque_diario_realizado +=1 # Soma em 1 na contagem de saques diários.
                                     print(f'Saque de R$ {saque} efetuado com sucesso!\n')
-                                    print(f'Saldo atual é de R${saldo}\n\n')
+                                    print(f'Saldo atual é de R${v_saldo}\n\n')
                                     break
                                 elif confirmacao == '0':
                                     print('Saque CANCELADO!\n')
@@ -225,51 +147,99 @@ while True:
                             print('Saldo insuficiente!\n')
                     else:
                         print(f'Valor superior ao limite por saque permitido!\n') 
+            #return voltar_menu, v_saldo, v_quantidade_de_operacoes, v_extrato
             
-            # Cria um looping do submenu de saque.   
-            while True: 
 
-                # Verifica se atingiu a quantidade de saque diário e retira a opção de saque quando atingido.
-                if quantidide_saque_diario_realizado >= QUANTIDADE_SAQUE_DIARIO_MAXIMO:
-                    print('Limite de saques diários atingido!\n')
+def visualizar_extrato(v_quantidade_de_operacoes = quantidade_de_operacoes):
+    while True:  
+        if v_quantidade_de_operacoes == 0 :
+            print('Não foram realizadas movimentações!\n')
+        else:
+            print(extrato)
+        print('[ 0 ] Voltar ao menu principal\n[ 9 ] Sair\n ')
+        voltar_menu = input('Digite uma das opções acima: ')
+        limpar_tela()    
+        if voltar_menu == '0' or voltar_menu == '9':
+            return voltar_menu, v_quantidade_de_operacoes 
 
-                    # Verifica alguns possíveis erros do usuário forçando-o a escolher a opção correta .
-                    while True:  
-                        print('[ 0 ] Voltar ao menu principal\n[ 9 ] Sair\n ')
-                        voltar_menu = input('Digite uma das opções acima: ')
-                        print(f'{"\n"*1000}') # Limpar a tela.     
-                        if voltar_menu == '0' or voltar_menu == '9':
-                            break
-                        else:
-                            print('Opção invalida!\nDigite: 0 para voltar ao menu principal ou 9 para encerrar o atendimento!\n')
-                    if voltar_menu == '9' or voltar_menu == '0':
-                        break 
-                print('[ 0 ] Voltar ao menu principal\n[ 1 ] Escolher novo valor de saque\n[ 9 ] Sair\n ')
-                voltar_menu = input('Digite uma das opções acima: ')
-                print(f'{"\n"*1000}') # Limpar a tela.     
-                if voltar_menu == '0' or voltar_menu == '1' or voltar_menu == '9':
-                    break
-                else:
-                    print('Opção invalida!\nDigite: 0 - para voltar ao menu principal, 1 para escolher um novo valor ou 9 para encerrar o atendimento!\n')
-            if voltar_menu == '9' or voltar_menu == '0':
+def criar_usuário():
+    pass
+
+def criar_contos():
+    pass
+
+
+
+        
+  
+
+
+# -----------> Main Code < ---------------------------
+
+#looping do menu.
+while True:
+    # ----> Início bloco Menu <----
+    
+    # Verifica se é possivel fazer saque no dia, muda o layout do menu com ou sem opção de saque.
+    opcao = menu() if (saldo ==0 or quantidide_saque_diario_realizado == QUANTIDADE_SAQUE_DIARIO_MAXIMO) else  menu(sacar=True)
+    print(f'{"\n"*1000}') # Limpar a tela.
+    # ----> FIM bloco Menu <----
+        
+    # ----> Início bloco Saldo <----
+    # Refere-se a opção 1 do Menu.
+    if opcao == 1: 
+        visualizar_saldo(saldo)
+        voltar_menu = sub_menu()
+    # ----Fim bloco Saldo <----
+
+    # ----> Início bloco Depósito <----        
+    # Refere-se a opção 2 do Menu.
+    elif opcao == 2: 
+        while True:
+            saldo, quantidade_de_operacoes, extrato = depositar(saldo, quantidade_de_operacoes, extrato)
+            voltar_menu = sub_menu(menu_principal=True)
+            if voltar_menu != "1":
+                break
+
+        
+    # ----> Fim bloco Depósito <----
+    
+    # ----> Inicio bloco Saque <----     
+    # Refere-se a opção 3 do Menu
+    elif opcao == 3: 
+        voltar_menu, saldo, quantidade_de_operacoes, extrato, quantidide_saque_diario_realizado = sacar(v_saldo=saldo, v_quantidade_de_operacoes=quantidade_de_operacoes,
+          v_extrato=extrato,
+          v_quantidide_saque_diario_realizado=quantidide_saque_diario_realizado,
+          V_VALOR_MAXIMO_POR_SAQUE= VALOR_MAXIMO_POR_SAQUE,
+          V_QUANTIDADE_SAQUE_DIARIO_MAXIMO=QUANTIDADE_SAQUE_DIARIO_MAXIMO)
+        
+
+        # Cria um looping do submenu de saque.   
+        while True: 
+            v_saldo, v_quantidade_de_operacoes, v_extrato, v_quantidide_saque_diario_realizado = sacar(
+                v_saldo=saldo,
+                v_quantidade_de_operacoes=quantidade_de_operacoes,
+                v_extrato=extrato,
+                v_quantidide_saque_diario_realizado=quantidide_saque_diario_realizado,
+                V_VALOR_MAXIMO_POR_SAQUE= VALOR_MAXIMO_POR_SAQUE,
+                V_QUANTIDADE_SAQUE_DIARIO_MAXIMO=QUANTIDADE_SAQUE_DIARIO_MAXIMO)
+            
+
+            if quantidide_saque_diario_realizado >= QUANTIDADE_SAQUE_DIARIO_MAXIMO:
+                print('Limite de saques diários atingido!\n')
+                voltar_menu = sub_menu(menu_principal = False) 
+                #
+            else:
+                voltar_menu = sub_menu(menu_principal = True)
+            if voltar_menu != "1":
                 break
     # ----> Fim bloco Saque <----
 
     # ----> Inicio bloco Extrato <----            
     # Refere-se a opção 4 do Menu.
     elif opcao == 4:
+        voltar_menu, quantidade_de_operacoes = visualizar_extrato(v_quantidade_de_operacoes = quantidade_de_operacoes)
         
-        # Verifica alguns possíveis erros do usuário forçando-o a escolher a opção correta.
-        while True:  
-            if quantidade_de_operacoes == 0 :
-                print('Não foram realizadas movimentações!\n')
-            else:
-                print(extrato)
-            print('[ 0 ] Voltar ao menu principal\n[ 9 ] Sair\n ')
-            voltar_menu = input('Digite uma das opções acima: ')
-            print(f'{"\n"*1000}') # Limpar a tela.     
-            if voltar_menu == '0' or voltar_menu == '9':
-                break
     # ----> Fim bloco Extrato <----
     
     # ----> Início bloco Sair <----
