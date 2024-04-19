@@ -29,11 +29,16 @@ def menu(sacar = False):
     return opcao
 
     
-def sub_menu(menu_principal = False):
+def sub_menu( operacao=None, menu_principal = False):
     if menu_principal == False:
         print('[ 0 ] Voltar ao menu principal\n[ 9 ] Sair\n ') 
     else:
-        print('[ 0 ] Voltar ao menu principal\n[ 1 ] Fazer um novo depósito\n[ 9 ] Sair\n')
+        if operacao == "deposito" or operacao == 'saque':
+            operacao = operacao
+        else:
+            print('Operação inválida! Digite "deposito" ou "saque"!')
+            return None
+        print(f'[ 0 ] Voltar ao menu principal\n[ 1 ] Fazer um novo {operacao}\n[ 9 ] Sair\n')
     voltar_menu = input('digite uma das opções acima: ') 
     limpar_tela() 
 
@@ -48,7 +53,7 @@ def sub_menu(menu_principal = False):
             return voltar_menu
         else:
             print('Opção incorreta, digite 0, 1 ou 9 conforme as opções apresentada!\n')
-            sub_menu(menu_principal=True)
+            sub_menu(operacao = operacao, menu_principal=True)
 
     
 def limpar_tela():
@@ -72,10 +77,24 @@ def formatar_string(texto):
 def visualizar_saldo(v_salda=saldo):
     print(f'Saldo disponivel: R${v_salda:.2f}\n')
 
+def visualizar_extrato(v_quantidade_de_operacoes = quantidade_de_operacoes):  
+    if v_quantidade_de_operacoes == 0 :
+        print('Não foram realizadas movimentações!\n')
+    else:
+        print(extrato)
+
 
 
 def depositar(v_saldo=saldo, v_quantidade_de_operacoes=quantidade_de_operacoes, v_extrato=extrato):
-    deposito = input('digite o valor do depósito: ')
+    while True:
+        try:
+            deposito = input('digite o valor do depósito: ')
+            if float(deposito) or '0':
+                break
+        except:
+            limpar_tela()
+            print(f'Valor {deposito} é um valor inválido!\nDigite um valor válido! Ex:3.14{'\n'*5}')
+            
     limpar_tela()
     
     deposito = formatar_string(deposito)
@@ -97,70 +116,82 @@ def sacar(v_saldo=saldo,
           v_extrato=extrato,
           v_quantidide_saque_diario_realizado=quantidide_saque_diario_realizado,
           V_VALOR_MAXIMO_POR_SAQUE= VALOR_MAXIMO_POR_SAQUE):
-    
-    while True:
 
-            # Verifica o saldo para saber se é possível fazer saque.
-            if v_saldo == 0:
-                print(f'Saldo insuficiente!\n')
-                break
-            else:
-                print(f'Saldo: R${v_saldo :.2f}\n')
-                saque = input('Digite o valor de saque desejado: ')
+        print(f'Saldo: R${v_saldo :.2f}\n')
+        saque = input('Digite o valor de saque desejado: ')
+        limpar_tela()
 
-                # Formata a casa decimal do número inserido no input "saque".
-                formatar_string(saque)
+        # Formata a casa decimal do número inserido no input "saque".
+        saque = formatar_string(saque)
 
-                flt_saque = float(saque)
-                limpar_tela() 
+        saque_validado = validar_saque(saque, V_VALOR_MAXIMO_POR_SAQUE= VALOR_MAXIMO_POR_SAQUE, v_saldo = saldo)
+        
+        if saque_validado == True:
+            confirmacao = confirmacao_saque(saque)
+            limpar_tela() 
+            if confirmacao == '1':
+                v_saldo -= float(saque) # Retira o valor do saldo.
+                v_quantidade_de_operacoes += 1 # Soma 1 ao contador "quantidade de operações" para ser usado no extrato.
+                v_extrato += f'{v_quantidade_de_operacoes}{" "*(20 - len(str(v_quantidade_de_operacoes)))}  Saque {" "*(37-len(saque))} R${saque}\n' # Formata e adiciona item no extrato.
+                v_quantidide_saque_diario_realizado +=1 # Soma em 1 na contagem de saques diários.
+                print(f'Saque de R$ {saque} efetuado com sucesso!\n')
+                print(f'Saldo atual é de R${v_saldo :2f}\n\n')
+                return v_saldo, v_quantidade_de_operacoes, v_extrato, v_quantidide_saque_diario_realizado
+            elif confirmacao == '0':
+                print('Saque CANCELADO!\n') 
+        return v_saldo, v_quantidade_de_operacoes, v_extrato, v_quantidide_saque_diario_realizado
 
-                # Verifica se o numero digitado é positivo.
-                if flt_saque <= 0:
-                    print('Valor de saque deve ser maior que R$ 0.00\n')
-                else:
+          
 
-                    #  Verifica se o valor é menor que a restrição de valor máximo por dia.
-                    if flt_saque <= V_VALOR_MAXIMO_POR_SAQUE:
-
-                        # Verifica se valor do saldo é maior que valor do saque.
-                        if flt_saque <= v_saldo:
-
-                            # Confirmação e execução do valor do saque.
-                            while True:
-                                print(f'O valor de R$ {saque} será descontado da conta, confirma?\n[ 0 ] NÃO\n[ 1 ] SIM\n')
-                                confirmacao = input('digite uma das opções acima: ')
-                                limpar_tela() 
-                                if confirmacao == '1':
-                                    v_saldo -= flt_saque # Retira o valor do saldo.
-                                    v_quantidade_de_operacoes += 1 # Soma 1 ao contador "quantidade de operações" para ser usado no extrato.
-                                    v_extrato += f'{v_quantidade_de_operacoes}{" "*(20 - len(str(v_quantidade_de_operacoes)))}  Saque {" "*(37-len(saque))} R${saque}\n' # Formata e adiciona item no extrato.
-                                    v_quantidide_saque_diario_realizado +=1 # Soma em 1 na contagem de saques diários.
-                                    print(f'Saque de R$ {saque} efetuado com sucesso!\n')
-                                    print(f'Saldo atual é de R${v_saldo}\n\n')
-                                    break
-                                elif confirmacao == '0':
-                                    print('Saque CANCELADO!\n')
-                                    break
-                                else:
-                                    print('Opção incorreta, digite 0 para cancelar o saque ou 1 para confirmar o saque.\n')
-                        else:
-                            print('Saldo insuficiente!\n')
-                    else:
-                        print(f'Valor superior ao limite por saque permitido!\n') 
-            #return voltar_menu, v_saldo, v_quantidade_de_operacoes, v_extrato
-            
-
-def visualizar_extrato(v_quantidade_de_operacoes = quantidade_de_operacoes):
-    while True:  
-        if v_quantidade_de_operacoes == 0 :
-            print('Não foram realizadas movimentações!\n')
+def confirmacao_saque(saque):
+    print(f'O valor de R$ {saque} será descontado da conta, confirma?\n[ 0 ] NÃO\n[ 1 ] SIM\n')
+    try:
+        confirmacao = input('digite uma das opções acima: ')
+        if confirmacao == "1" or confirmacao == "0":
+            return confirmacao
         else:
-            print(extrato)
-        print('[ 0 ] Voltar ao menu principal\n[ 9 ] Sair\n ')
-        voltar_menu = input('Digite uma das opções acima: ')
-        limpar_tela()    
-        if voltar_menu == '0' or voltar_menu == '9':
-            return voltar_menu, v_quantidade_de_operacoes 
+            confirmacao_saque(saque)
+    except:
+        print('Opção inválida!\n')
+        confirmacao_saque(saque)
+
+
+
+def validar_saque(  valor,
+                    V_VALOR_MAXIMO_POR_SAQUE= VALOR_MAXIMO_POR_SAQUE,
+                    v_saldo = saldo,
+                    quantidide_saque_diario_realizado = quantidide_saque_diario_realizado,
+                    V_QUANTIDADE_SAQUE_DIARIO_MAXIMO = QUANTIDADE_SAQUE_DIARIO_MAXIMO ):
+
+
+    if quantidide_saque_diario_realizado >= V_QUANTIDADE_SAQUE_DIARIO_MAXIMO:
+        print('Limite de {V_QUANTIDADE_SAQUE_DIARIO_MAXIMO} saques diários atingido!\n')
+        return None
+    
+    if v_saldo <= 0:
+        print(f'Saldo insuficiente!\n')
+        return None
+    try:
+        valor = float(valor)
+    except:
+        print('Valor inválido! Tipo de número não compatível. Ex: válido 3.14.\n')
+        return None
+
+    if valor > V_VALOR_MAXIMO_POR_SAQUE:
+        print(f'Valor superior ao limite por saque permitido! Valor deve ser inferior a R$ {V_VALOR_MAXIMO_POR_SAQUE}.\n')
+        return None
+
+    if valor > v_saldo:
+        print('Saldo insuficiente!\n')
+        return None
+
+    if valor <= 0:
+        print('Valor de saque deve ser maior que R$ 0.00.\n')
+        return None
+
+    return True
+    
+
 
 def criar_usuário():
     pass
@@ -197,40 +228,30 @@ while True:
     elif opcao == 2: 
         while True:
             saldo, quantidade_de_operacoes, extrato = depositar(saldo, quantidade_de_operacoes, extrato)
-            voltar_menu = sub_menu(menu_principal=True)
+            voltar_menu = sub_menu('deposito', menu_principal=True)
             if voltar_menu != "1":
                 break
-
-        
     # ----> Fim bloco Depósito <----
     
     # ----> Inicio bloco Saque <----     
     # Refere-se a opção 3 do Menu
-    elif opcao == 3: 
-        voltar_menu, saldo, quantidade_de_operacoes, extrato, quantidide_saque_diario_realizado = sacar(v_saldo=saldo, v_quantidade_de_operacoes=quantidade_de_operacoes,
-          v_extrato=extrato,
-          v_quantidide_saque_diario_realizado=quantidide_saque_diario_realizado,
-          V_VALOR_MAXIMO_POR_SAQUE= VALOR_MAXIMO_POR_SAQUE,
-          V_QUANTIDADE_SAQUE_DIARIO_MAXIMO=QUANTIDADE_SAQUE_DIARIO_MAXIMO)
-        
+    elif opcao == 3:         
 
         # Cria um looping do submenu de saque.   
         while True: 
-            v_saldo, v_quantidade_de_operacoes, v_extrato, v_quantidide_saque_diario_realizado = sacar(
+            saldo, quantidade_de_operacoes, extrato, quantidide_saque_diario_realizado = sacar(
                 v_saldo=saldo,
                 v_quantidade_de_operacoes=quantidade_de_operacoes,
                 v_extrato=extrato,
                 v_quantidide_saque_diario_realizado=quantidide_saque_diario_realizado,
-                V_VALOR_MAXIMO_POR_SAQUE= VALOR_MAXIMO_POR_SAQUE,
-                V_QUANTIDADE_SAQUE_DIARIO_MAXIMO=QUANTIDADE_SAQUE_DIARIO_MAXIMO)
+                V_VALOR_MAXIMO_POR_SAQUE= VALOR_MAXIMO_POR_SAQUE)
             
-
+            # validaçao para fazer novo saque ou sair
             if quantidide_saque_diario_realizado >= QUANTIDADE_SAQUE_DIARIO_MAXIMO:
                 print('Limite de saques diários atingido!\n')
-                voltar_menu = sub_menu(menu_principal = False) 
-                #
+                voltar_menu = sub_menu() 
             else:
-                voltar_menu = sub_menu(menu_principal = True)
+                voltar_menu = sub_menu(operacao ='saque',menu_principal = True)
             if voltar_menu != "1":
                 break
     # ----> Fim bloco Saque <----
@@ -238,8 +259,9 @@ while True:
     # ----> Inicio bloco Extrato <----            
     # Refere-se a opção 4 do Menu.
     elif opcao == 4:
-        voltar_menu, quantidade_de_operacoes = visualizar_extrato(v_quantidade_de_operacoes = quantidade_de_operacoes)
-        
+        visualizar_extrato(v_quantidade_de_operacoes = quantidade_de_operacoes)
+        voltar_menu = sub_menu()
+
     # ----> Fim bloco Extrato <----
     
     # ----> Início bloco Sair <----
