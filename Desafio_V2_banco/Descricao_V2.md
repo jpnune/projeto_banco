@@ -24,3 +24,6 @@ O programa deve armazernar os usuários em uma lista um usuário é composto por
 
 ## Criar conta corrente
 O progrma deve armazenar contas em uma lista, uma conta é composta por: agência, numero da conta e usuário. O número da conta é sequecial, iniciando em 1. O número da agência é fixo: "0001". O usuário pode ter mais de uma conta, mas uma conta pertence somente a um usuário.
+
+## Algumas Observaçoes 
+Algumas validaçoes nao foram feita por questoes didática para nao prolongar muito o projeto, como verificação de ano bissexto, complemento do endereço ou detalhes similares, pois se eu tem tentar validar tudo o projeto nunca acaba rs .

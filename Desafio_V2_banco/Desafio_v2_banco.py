@@ -10,6 +10,21 @@ quantidide_saque_diario_realizado = 0
 QUANTIDADE_SAQUE_DIARIO_MAXIMO = 3
 VALOR_MAXIMO_POR_SAQUE = 500
 
+# variaveis dos ususarios
+lista_usuario = {'12345678911':{'1': {'nome':'joao','data_nascimento': '11/01/1987','endereço':  'rua do caju, 34 - pitanga - floresta/SP', 'conta': '1'}},
+                 '12387978900':{ '2':{'nome':'paulo','data_nascimento': '15/07/1956','endereço':  'rua do america, 25 - mundo - terra/RJ', 'conta':'2'},
+                                '3':{'nome':'paulo','data_nascimento': '15/07/1956','endereço':  'rua do america, 25 - mundo - terra/RJ', 'conta':'3'}}
+                }
+
+#variaveis das contas
+lista_conta = [
+                ['0001','1', 'joao'],
+                ['0001','2', 'paulo'],
+                ['0001','3', 'paulo'],
+               ]
+contador_id_conta = 1
+
+
 
 
 #funções
@@ -23,6 +38,7 @@ def menu(sacar = False):
     if sacar == True:
         print(f'{" "*15}[ 3 ] Sacar')
     print(f'{" "*15}[ 4 ] Extrato')
+    print(f'{" "*15}[ 5 ] Criar um conta')
     print(f'{" "*15}[ 9 ] Sair')
     print()
     opcao = int(input(f'{"#"*51}{"\n"*3}Digite aqui --> '))
@@ -82,7 +98,6 @@ def visualizar_extrato(v_quantidade_de_operacoes = quantidade_de_operacoes):
         print('Não foram realizadas movimentações!\n')
     else:
         print(extrato)
-
 
 
 def depositar(v_saldo=saldo, v_quantidade_de_operacoes=quantidade_de_operacoes, v_extrato=extrato):
@@ -188,16 +203,100 @@ def validar_saque(  valor,
     if valor <= 0:
         print('Valor de saque deve ser maior que R$ 0.00.\n')
         return None
-
     return True
+
+
     
+def eh_duplicado(cpf, lista):
+    return True if cpf in lista else False
+
+def validar_cpf(cpf):
+    cpf = str(cpf)
+    return True if len(cpf) ==11 else False 
+        
+
+def validar_estado(estado):
+    sigla_estado = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MS','MT',
+                'MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC',
+                'SP','SE','TO']
+    estado = str.upper(estado)
+    return True if estado in sigla_estado else False
+
+def valida_data_nascimento(data_nascimento):
+    try:
+        dia = int(data_nascimento[:2]) 
+        mes = int(data_nascimento[3:5])
+        ano = int(data_nascimento[6:11])
+    except:
+        return False
+    
+    if data_nascimento[2] != '/' or data_nascimento[5] != '/' :
+        return False
+
+    if ano < 1900 or ano > 2024:
+        return False
+    
+    if dia < 1:
+        return False
+
+    match mes:
+        case 1 | 3 | 5 | 7 | 8 | 10 | 12:
+            if dia > 31:
+                return False
+        case 2 :
+            if dia >28:
+                return False
+        case 4 | 6 | 9 | 11:
+            if dia > 30:
+                return False
+        case _:
+            return False
+    return True
+        
 
 
-def criar_usuário():
+
+def valida_usuario(data_nascimento ,cpf, logradouro, numero,bairro, cidade, sigla_estado):
     pass
 
-def criar_contos():
-    pass
+def criar_usuário(nome,data_nascimento ,cpf, logradouro, numero,bairro, cidade, sigla_estado ):
+    global lista_usuario
+
+    
+    
+    if valida_data_nascimento(data_nascimento) == False:
+        return 'Data de nascimento inválida!\n Digite uma data válida no formato dd/mm/aaaa!'         
+    
+    if validar_cpf(cpf) ==False:
+        return 'CPF inválido!\n Digite um cpf somente com números e com 11 digitos'
+    
+    if eh_duplicado(cpf, lista_usuario):
+        return 'CPF ja cadastrado!'
+    
+    if validar_estado(sigla_estado) == False:
+        return "Sigla de Estado inválido"
+    
+    if str.isdigit(numero) == False:
+        return 'número da residência inválido digite um número somente com dígitos numéricos'
+    
+    endereço = f'{logradouro}, {numero} - {bairro} - {cidade}/{sigla_estado}'
+    
+    return {'nome': nome,
+            'data_nascimento': data_nascimento,
+            'CPF': cpf,
+            'endereço': endereço}
+
+def criar_contas(cpf):
+    # agência, numero da conta e usuário
+    global contador_id_conta 
+
+    if eh_duplicado(cpf):
+        return
+    agencia = '0001'
+    id_conta = str(contador_id_conta)
+    usuario = usuário
+    contador_id_conta += 1 
+    return {'ID_Conta':id_conta,'Agência': agencia,'Usuario': usuario, 'CPF':cpf}
 
 
 
@@ -262,6 +361,23 @@ while True:
         visualizar_extrato(v_quantidade_de_operacoes = quantidade_de_operacoes)
         voltar_menu = sub_menu()
 
+    # ----> Fim bloco Extrato <----
+
+    # ----> Inicio bloco Extrato <---- 
+    elif opcao == 5:
+        sair = '0'
+        while sair != '0':
+            cpf = input("digite o numero do seu cpf! ")
+            if validar_cpf(cpf) ==False:
+                print('CPF inválido!\n Digite um cpf somente com números e com 11 digitos')
+            else:
+                break
+            if cpf ==0:
+                break   
+        try:
+            print(f'encontrado cadastro ==> {lista_usuario[cpf]}')
+        except:
+            print('Cpf nao encontrado!')
     # ----> Fim bloco Extrato <----
     
     # ----> Início bloco Sair <----
