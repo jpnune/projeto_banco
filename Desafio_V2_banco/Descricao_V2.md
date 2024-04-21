@@ -2,10 +2,10 @@
 
 # Desafio V2 
 
-Precisamos deixar nosso código mais modularizado, para isso vamos criar funções para as operações existentes: Sacar, Depositar, Visualizar Extrato, Visualizar saldo. Além disso, para versão 2 do nosso sistena precisamos criar duas novas funções: Criar usuário(cliente do banco) e criar conta corrente (vincular comm usuário). 
+Precisamos deixar nosso código mais modularizado, para isso vamos criar funções para as operações existentes: Sacar, Depositar, Visualizar Extrato, Visualizar saldo. Além disso, para versão 2 do nosso sistena precisamos criar duas novas funções: Criar usuário(cliente do banco) e criar conta corrente (vincular com usuário). 
 
 ## Separação das funções 
-Devemos criar funções para todas as operaçoes do sistema. Para exercitar tudo o que aprendemos neste módulo, cada função vai ter uma regra na passagem de argumentos. O retorno e a forma como serão chamadas, podem ser definidas por você da forma que achar melhor. 
+Devemos criar funções para todas as operaçoes do sistema. Para exercitar tudo o que aprendemos neste módulo, cada função vai ter uma regra na passagem de argumentos. O retorno e a forma como serão chamadas, podem ser definidas por você da forma que achar melhor. As funções alé das funções Saque, Deposito, Extrato, Criar usuario e Criar conta corrente, podem ser livre, não tem restrição
 
 ## Saque 
 A função saqur deve receber argumentos apenas por nomes (keywords only). Sugestão se argumentos: saldo, valor, extrato, limite, num_saques, limites_saques. Sugestão de retorno: Saldo e extrato 
@@ -26,4 +26,6 @@ O programa deve armazernar os usuários em uma lista um usuário é composto por
 O progrma deve armazenar contas em uma lista, uma conta é composta por: agência, numero da conta e usuário. O número da conta é sequecial, iniciando em 1. O número da agência é fixo: "0001". O usuário pode ter mais de uma conta, mas uma conta pertence somente a um usuário.
 
 ## Algumas Observaçoes 
-Algumas validaçoes nao foram feita por questoes didática para nao prolongar muito o projeto, como verificação de ano bissexto, complemento do endereço ou detalhes similares, pois se eu tem tentar validar tudo o projeto nunca acaba rs .
+Algumas validações não foram feita por questões didática para não prolongar muito o projeto, como verificação de ano bissexto, complemento do endereço ou detalhes similares, pois se eu tem tentar validar tudo o projeto nunca acaba rs .
+
+Opçao 6 de visualizar contas e usuário, é temporário, pois na próxima versão será utizando POO e vai sair essa opção. Essa opção é apenas para didátia de confirmação de que as contas e usuários foram criados corretamente.

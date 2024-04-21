@@ -11,17 +11,11 @@ QUANTIDADE_SAQUE_DIARIO_MAXIMO = 3
 VALOR_MAXIMO_POR_SAQUE = 500
 
 # variaveis dos ususarios
-lista_usuario = {'12345678911':{'1': {'nome':'joao','data_nascimento': '11/01/1987','endereço':  'rua do caju, 34 - pitanga - floresta/SP', 'conta': '1'}},
-                 '12387978900':{ '2':{'nome':'paulo','data_nascimento': '15/07/1956','endereço':  'rua do america, 25 - mundo - terra/RJ', 'conta':'2'},
-                                '3':{'nome':'paulo','data_nascimento': '15/07/1956','endereço':  'rua do america, 25 - mundo - terra/RJ', 'conta':'3'}}
-                }
+lista_usuario = []
+                
 
 #variaveis das contas
-lista_conta = [
-                ['0001','1', 'joao'],
-                ['0001','2', 'paulo'],
-                ['0001','3', 'paulo'],
-               ]
+lista_conta = []
 contador_id_conta = 1
 
 
@@ -39,6 +33,7 @@ def menu(sacar = False):
         print(f'{" "*15}[ 3 ] Sacar')
     print(f'{" "*15}[ 4 ] Extrato')
     print(f'{" "*15}[ 5 ] Criar um conta')
+    print(f'{" "*15}[ 6 ] Visualizar lista de usuários e contas')
     print(f'{" "*15}[ 9 ] Sair')
     print()
     opcao = int(input(f'{"#"*51}{"\n"*3}Digite aqui --> '))
@@ -150,7 +145,7 @@ def sacar(v_saldo=saldo,
                 v_extrato += f'{v_quantidade_de_operacoes}{" "*(20 - len(str(v_quantidade_de_operacoes)))}  Saque {" "*(37-len(saque))} R${saque}\n' # Formata e adiciona item no extrato.
                 v_quantidide_saque_diario_realizado +=1 # Soma em 1 na contagem de saques diários.
                 print(f'Saque de R$ {saque} efetuado com sucesso!\n')
-                print(f'Saldo atual é de R${v_saldo :2f}\n\n')
+                print(f'Saldo atual é de R$ {v_saldo :.2f}\n\n')
                 return v_saldo, v_quantidade_de_operacoes, v_extrato, v_quantidide_saque_diario_realizado
             elif confirmacao == '0':
                 print('Saque CANCELADO!\n') 
@@ -212,7 +207,7 @@ def eh_duplicado(cpf, lista):
 
 def validar_cpf(cpf):
     cpf = str(cpf)
-    return True if len(cpf) ==11 else False 
+    return True if len(cpf) ==11 and str.isdigit(cpf) else False 
         
 
 def validar_estado(estado):
@@ -255,48 +250,52 @@ def valida_data_nascimento(data_nascimento):
         
 
 
+  
 
-def valida_usuario(data_nascimento ,cpf, logradouro, numero,bairro, cidade, sigla_estado):
-    pass
+def criar_usuario(cpf, nome):
 
-def criar_usuário(nome,data_nascimento ,cpf, logradouro, numero,bairro, cidade, sigla_estado ):
-    global lista_usuario
-
-    
-    
+    data_nascimento = input('Digite sua data_nascimento. Formato dd/mm/aaaa: ')
+    limpar_tela()
     if valida_data_nascimento(data_nascimento) == False:
-        return 'Data de nascimento inválida!\n Digite uma data válida no formato dd/mm/aaaa!'         
+        print('Data de nascimento inválida!\n\nDigite uma data válida no formato dd/mm/aaaa!\n')
+        return False
     
-    if validar_cpf(cpf) ==False:
-        return 'CPF inválido!\n Digite um cpf somente com números e com 11 digitos'
-    
-    if eh_duplicado(cpf, lista_usuario):
-        return 'CPF ja cadastrado!'
-    
-    if validar_estado(sigla_estado) == False:
-        return "Sigla de Estado inválido"
-    
-    if str.isdigit(numero) == False:
-        return 'número da residência inválido digite um número somente com dígitos numéricos'
-    
-    endereço = f'{logradouro}, {numero} - {bairro} - {cidade}/{sigla_estado}'
-    
-    return {'nome': nome,
-            'data_nascimento': data_nascimento,
-            'CPF': cpf,
-            'endereço': endereço}
+    logradouro = input('Digite o nome do logradouro. EX: Rua, Av, Alameda... : ')
+    limpar_tela()
 
-def criar_contas(cpf):
+    numero = input('Digite o número da residência. Somente número: ')
+    limpar_tela()
+    if str.isdigit(numero) == False:
+        print('Número da residência inválido!\n\nDigite um número somente com dígitos numéricos\n')
+        return False
+
+    bairro = input('Digite o nome do bairro: ')
+    limpar_tela()
+
+    cidade = input('Digite o nome da cidade: ')
+    limpar_tela()
+
+    sigla_estado = input('Digite a sigla do estado. Ex: SP, RJ, MG... : ')
+    limpar_tela()
+    if validar_estado(sigla_estado) == False:
+        print('Sigla de Estado inválido\n')
+    
+    endereço = f'{logradouro}, {numero} - {bairro} - {cidade}/{str.upper(sigla_estado)}'
+    
+    print('Usuário criado com sucesso!\n')
+    return [cpf, nome, data_nascimento, endereço]
+
+
+def criar_contas(cpf, usuario):
     # agência, numero da conta e usuário
     global contador_id_conta 
 
-    if eh_duplicado(cpf):
-        return
     agencia = '0001'
     id_conta = str(contador_id_conta)
-    usuario = usuário
+    usuario = usuario
     contador_id_conta += 1 
-    return {'ID_Conta':id_conta,'Agência': agencia,'Usuario': usuario, 'CPF':cpf}
+
+    return [agencia, id_conta, usuario, cpf]
 
 
 
@@ -365,21 +364,48 @@ while True:
 
     # ----> Inicio bloco Extrato <---- 
     elif opcao == 5:
-        sair = '0'
-        while sair != '0':
+        while True:
             cpf = input("digite o numero do seu cpf! ")
+            limpar_tela()
             if validar_cpf(cpf) ==False:
                 print('CPF inválido!\n Digite um cpf somente com números e com 11 digitos')
             else:
                 break
-            if cpf ==0:
-                break   
-        try:
-            print(f'encontrado cadastro ==> {lista_usuario[cpf]}')
-        except:
-            print('Cpf nao encontrado!')
+        
+        nome_temp = ''
+        for x in lista_conta:
+            if x[3] == cpf:
+                nome_temp = x[2]
+                break
+              
+        if nome_temp !='':
+            lista_conta.append(criar_contas(cpf, nome_temp))  
+        else:
+            nome = input('Digite o nome do titular da conta: ')
+            limpar_tela()
+            lista_conta.append(criar_contas(cpf, nome))
+            lista_usuario.append(criar_usuario(cpf, nome))
+            
+        voltar_menu = sub_menu()
+        
+    
+    # ----> Início bloco visualizar contas e usuario <----
+    elif opcao == 6:
+        print('lista de contas por usuario.\n')
+
+        for x in lista_usuario:
+            print(f' CPF {x[0]}: cadastro = {x}')
+            print('Contas:')
+            for y in lista_conta:
+                if y[3] == x[0]:
+                    print(y)
+            print()
+
+        print()    
+        voltar_menu = sub_menu()
     # ----> Fim bloco Extrato <----
     
+    #[['11111111111', 222222222222
     # ----> Início bloco Sair <----
     # # Refere-se a opção 9 do Menu, finaliza o looping do menu e encerra o código. 
     if opcao == 9 or voltar_menu == '9':
@@ -388,3 +414,4 @@ while True:
     # ----> Fim bloco Sair <----
 
 # ------------------> FIM CÓDIGO <-------------------------------
+
