@@ -8,7 +8,7 @@ Precisamos deixar nosso código mais modularizado, para isso vamos criar funçõ
 Devemos criar funções para todas as operaçoes do sistema. Para exercitar tudo o que aprendemos neste módulo, cada função vai ter uma regra na passagem de argumentos. O retorno e a forma como serão chamadas, podem ser definidas por você da forma que achar melhor. As funções alé das funções Saque, Deposito, Extrato, Criar usuario e Criar conta corrente, podem ser livre, não tem restrição
 
 ## Saque 
-A função saqur deve receber argumentos apenas por nomes (keywords only). Sugestão se argumentos: saldo, valor, extrato, limite, num_saques, limites_saques. Sugestão de retorno: Saldo e extrato 
+A função saque deve receber argumentos apenas por nomes (keywords only). Sugestão se argumentos: saldo, valor, extrato, limite, num_saques, limites_saques. Sugestão de retorno: Saldo e extrato 
 
 ## Depósito
 A função de depósito deve receber os argumentos apenas por posição (positional only). Sugestão de argumentos: Saldo, valor, extrato. Sugestão de retorno: saldo e extrato.
