@@ -50,7 +50,7 @@ Variáveis, Estruturas Condicionais, Estrutura de Repetição, Manipulação de 
     
     Abra o terminal ou prompt de comando.
     Navegue até o diretório onde o arquivo foi baixado.
-    Digite o comando “python projeto_v1_banco.py” e pressione Enter.
+    Digite o comando “python projeto_banco.py” e pressione Enter.
     O arquivo Python será executado e o resultado será exibido no terminal.
  ``` 
 
